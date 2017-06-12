@@ -54,6 +54,9 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+# Custom user
+AUTH_USER_MODEL = 'member.User'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -63,6 +66,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'post',
+    'member',
 ]
 
 MIDDLEWARE = [
