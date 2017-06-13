@@ -1,13 +1,19 @@
 {% extends 'common/base.html' %}
 
 {% block content %}
-    <!--4. post_list.html에서 for loop사용해 전달된 posts변수 순환 및 출력-->
-    {% for post in posts %}
-    <!-- <div>
+	<!--4. post_list.html에서 for loop사용해 전달된 posts변수 순환 및 출력-->
+	<!--
+		include
+			https://docs.djangoproject.com/en/1.11/ref/templates/builtins/#include
+	-->
+	{% for post in posts %}
+		{% include 'include/post.html' %}
+<!--
+    <div>
         <span>{{ post.id }}</span>
         <span>{{ post.photo.url }}</span>
         <img src="{{ post.photo.url }}" alt="" width="600">
-    </div> -->
-    {% include 'include/post.html' %}
-    {% endfor %}
+    </div>
+ -->
+	{% endfor %}
 {% endblock %}

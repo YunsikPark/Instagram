@@ -68,7 +68,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-# Custom user
+# Custom user (default: auth.User)
 AUTH_USER_MODEL = 'member.User'
 
 INSTALLED_APPS = [
