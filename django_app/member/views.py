@@ -56,3 +56,8 @@ def logout(request):
     django_logout(request)
     return redirect('post:post_list')
 
+# Deprecated since version 1.11:
+# The logout function-based view should be replaced
+# by the class-based LogoutView.
+# https://docs.djangoproject.com/en/1.11/topics/auth/default/#django.contrib.auth.views.logout
+
