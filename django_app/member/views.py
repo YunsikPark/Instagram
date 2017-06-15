@@ -51,7 +51,7 @@ def login(request):
         # Bound form의 유효성 검증
         if form.is_valid():
             user = form.cleaned_data['user']
-            django_login(request,user)
+            django_login(request, user)
             return redirect('post:post_list')
 
 

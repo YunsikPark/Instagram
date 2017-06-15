@@ -6,6 +6,8 @@ from django.urls import reverse
 
 # 자동으로 Django에서 인증에 사용하는 User모델클래스를 리턴
 #   https://docs.djangoproject.com/en/1.11/topics/auth/customizing/#django.contrib.auth.get_user_model
+from member.forms import LoginForm
+
 User = get_user_model()
 
 from .models import Post
@@ -17,8 +19,10 @@ def post_list(request):
 
     # 각 포스트에 대해 최대 4개까지의 댓글을 보여주도록 템플릿에 설정
     posts = Post.objects.all()
+    form = LoginForm()
     context = {
         'posts': posts,
+        'form' : form,
     }
     return render(request, 'post/post_list.html', context)
 
