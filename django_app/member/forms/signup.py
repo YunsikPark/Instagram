@@ -9,9 +9,19 @@ class SignupForm(forms.Form):
     # SignupForm을 구성하고 해당 form을 view에서 사용하도록 설정
     username = forms.CharField(
         max_length=20,
+        help_text= 'Signup help text test',
         widget=forms.TextInput(
             attrs={
                 'placeholder': '사용할 아이디를 입력하세요',
+            }
+        )
+    )
+    nickname = forms.CharField(
+        max_length=24,
+        help_text= '닉네임은 유일해야 합니다.',
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': '사용할 닉네임을 입력하세요',
             }
         )
     )
@@ -39,6 +49,13 @@ class SignupForm(forms.Form):
                 'Username already exist'
             )
         return username
+
+    def clean_nickname(self):
+        nickname = self.cleaned_data.get('nickname')
+        if nickname and User.objects.filter(nickname=nickname).exists():
+            raise forms.ValidationError(
+                'Nickname already exist'
+            )
 
     def clean_password2(self):
         # password1과 비교하여 같은지
