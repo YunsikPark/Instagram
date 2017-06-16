@@ -22,9 +22,12 @@ def post_list(request):
     form = LoginForm()
     context = {
         'posts': posts,
-        'form' : form,
     }
     return render(request, 'post/post_list.html', context)
+
+
+
+
 
 
 def post_detail(request, post_pk):
