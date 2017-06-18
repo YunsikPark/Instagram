@@ -1,10 +1,10 @@
 .btn {
   color: white;
-  padding: 4px 10px;
+  padding: 6px 12px;
   border: 1px solid rgba(0, 0, 0, 0.0975);
+  background-color: lightblue;
   border-radius: 3px;
   cursor: pointer;
-  background-color: skyblue;
   text-decoration: none;
   font-size: 11px;
 }
@@ -14,7 +14,7 @@
 }
 
 .field-wrapper ul.errors {
-  font-size: 13px;
+  font-size: 11px;
   color: red;
   font-weight: bold;
   padding-left: 5px;
@@ -25,6 +25,11 @@
 }
 
 .field-wrapper input[type=text], .field-wrapper input[type=password] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.field-wrapper input [type=file] {
   width: 100%;
   box-sizing: border-box;
 }

@@ -44,33 +44,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
 # django_app/static
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
-
-STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     STATIC_DIR,
 ]
+STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+# django_app/media
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ke_u%$x!^k+c=00yg-j199@$v$xo^soh3z#(psfq60#kw&048j'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-# Application definition
 
 # Custom user (default: auth.User)
 AUTH_USER_MODEL = 'member.User'
+LOGIN_URL = 'member:login'
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -78,7 +67,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'django_extensions',
+
     'post',
     'member',
 ]
@@ -159,3 +150,13 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'ke_u%$x!^k+c=00yg-j199@$v$xo^soh3z#(psfq60#kw&048j'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+ALLOWED_HOSTS = []
