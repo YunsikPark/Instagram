@@ -8,3 +8,4 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.nickname or self.username
+        # return self.nickname if self.nickname else self.username
