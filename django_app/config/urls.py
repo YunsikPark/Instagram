@@ -18,13 +18,22 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 # from post import views as post_views
-from config import settings
+from django.views.generic import RedirectView
+
+from config import settings, views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # post앱의 urls.py 모듈을 include시킨다.
-    # url(r'^$', post_views.index),
+    # url(r'^$', post_views.post_list),
+
+    # 새 view를 만들어 redirect시키는 방법
+    url(r'^$', views.index),
+
+    # 아래와 같이 쓰면 config폴더에 views.py를 만들지 않아도 된다
+    # Class-based View중 RedirectView를 사용하는 방법
+    # url(r'^$', RedirectView.as_view(pattern_name='post:post_list')),
 
     # post앱의 urls.py모듈을 include시킨다.
     url(r'^post/', include('post.urls')),
