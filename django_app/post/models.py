@@ -19,7 +19,11 @@ class Post(models.Model):
         related_name='like_posts',
         through='PostLike',
     )
-    tags = models.ManyToManyField('Tag',blank=True)
+    tags = models.ManyToManyField('Tag', blank=True)
+
+    # 최근 post순으로 보이기
+    class Meta:
+        ordering = ['-pk', ]
 
     def add_comment(self, user, content):
         # 자신을 post로 갖고, 전달받은 user를 author로 가지며

@@ -18,7 +18,7 @@ def post_list(request):
     # post/post_list.html을 template으로 사용하도록 한다
 
     # 각 포스트에 대해 최대 4개까지의 댓글을 보여주도록 템플릿에 설정
-    posts = Post.objects.all()
+    posts = Post.objects.all()  # .order_by('-created_date')
     context = {
         'posts': posts,
     }
@@ -111,17 +111,15 @@ def post_create(request):
         form = PostForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             # ModelForm의 save()메서드를 사용해서 Post객체를 가져
-            post = form.save(commit=False)
-            post.author = request.user
-            post.save()
+            post = form.save(author=request.user)
             return redirect('post:post_detail', post_pk=post.pk)
     else:
         # post/post_create.html을 render해서 리턴
         form = PostForm()
-        context = {
-            'form': form,
-        }
-        return render(request, 'post/post_create.html', context)
+    context = {
+        'form': form,
+    }
+    return render(request, 'post/post_create.html', context)
 
 
 def post_modify(request, post_pk):
