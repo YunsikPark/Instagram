@@ -4,9 +4,11 @@ member application생성
         username, nickname
 이후 해당 settings.AUTH_USER_MODEL모델을 Post나 Comment에서 author나 user항목으로 참조
 """
+import re
 from django.conf import settings
 from django.db import models
-import re
+
+from django.urls import reverse
 
 
 class Post(models.Model):
@@ -66,7 +68,7 @@ class Comment(models.Model):
         super().save(*args, **kwargs)
         self.make_html_content_and_add_tags()
 
-    def make_html_content_and_add_tags(self, update=True):
+    def make_html_content_and_add_tags(self):
         # ex) 박보영 #여신 #존예 인스타
         # '박보영 <a href='#'>여신</a> <a href='#'>#존예</a> 인스타
         # 해당 내용을 self.html_content에 대입
@@ -79,10 +81,13 @@ class Comment(models.Model):
         ori_content = self.content
         # 문자열을 순회하며
         for tag_name in tag_name_list:
-            # Tag 객체를 가져오거나 생성, 생성여부는 쓰지않는 변수이브로 _처리
+            # Tag 객체를 가져오거나 생성, 생성여부는 쓰지않는 변수이므로 _처리
             tag, _ = Tag.objects.get_or_create(name=tag_name.replace('#', ''))
             # 기존 content의 내용을 변경
-            change_tag = '<a href="#" class="hash-tag">{}</a>'.format(tag_name)
+            change_tag = '<a href="{url}" class="hash-tag">{tag_name}</a>'.format(
+                url=reverse('post:hashtag_post_list', kwargs={'tag_name': tag_name.replace('#', '')}),
+                tag_name=tag_name
+            )
             ori_content = re.sub(r'{}(?![<\w])'.format(tag_name), change_tag, ori_content, count=1)
             # content에 포함된 Tag폭록을 자신의 tags필드에 추가
             if not self.tags.filter(pk=tag.pk).exists():
