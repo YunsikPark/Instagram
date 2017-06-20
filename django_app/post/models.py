@@ -25,7 +25,6 @@ class Post(models.Model):
         related_name='like_posts',
         through='PostLike',
     )
-    tags = models.ManyToManyField('Tag', blank=True)
 
     # 최근 post순으로 보이기
     class Meta:
@@ -36,13 +35,6 @@ class Post(models.Model):
         # content를 content필드내용으로 넣는 Comment객체 생성
         return self.comment_set.create(author=user, content=content)
 
-    def add_tag(self, tag_name):
-        # tags에 tag매개변수로 전달된 값(str)을
-        # name으로 갖는 Tag객체를 (이미 존재하면)가져오고 없으면 생성하여
-        # 자신의 tags에 추가
-        tag, tag_created = Tag.objects.get_or_create(name=tag_name)
-        if not self.tags.filter(id=tag.id).exists():
-            self.tags.add(tag)
 
     @property
     def like_count(self):
