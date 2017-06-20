@@ -6,6 +6,7 @@ member application생성
 """
 from django.conf import settings
 from django.db import models
+import re
 
 
 class Post(models.Model):
@@ -35,7 +36,6 @@ class Post(models.Model):
         # content를 content필드내용으로 넣는 Comment객체 생성
         return self.comment_set.create(author=user, content=content)
 
-
     @property
     def like_count(self):
         # 자신을 like하고 있는 user수 리턴
@@ -52,6 +52,8 @@ class Comment(models.Model):
     post = models.ForeignKey(Post)
     author = models.ForeignKey(settings.AUTH_USER_MODEL)
     content = models.TextField()
+    html_content = models.TextField(blank=True)
+    tags = models.ManyToManyField('Tag')
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
     like_users = models.ManyToManyField(
@@ -59,6 +61,37 @@ class Comment(models.Model):
         through='CommentLike',
         related_name='like_comments',
     )
+
+    def save(self, *args, **kwargs):
+        self.make_html_content_and_add_tags()
+        super().save(*args, **kwargs)
+
+    def make_html_content_and_add_tags(self):
+        # ex) 박보영 #여신 #존예 인스타
+        # '박보영 <a href='#'>여신</a> <a href='#'>#존예</a> 인스타
+        # 해당 내용을 self.html_content에 대입
+        # 해시태그에 해당하는 정규표현식
+        p = re.compile(r'(#\w+)')
+        # findall메서드로 해시태그 문자열들을 가져옴
+        tag_name_list = re.findall(p, self.content)
+        # 기존 content(Comment내용)을 변수에 할당
+        ori_content = self.content
+        for tag_name in tag_name_list:
+            # Tag 객체를 가져오거나 생성, 생성여부는 쓰지않는 변수이브로 _처리
+            tag, _ = Tag.objects.get_or_create(name=tag_name.replace('#', ''))
+            # 기존 content의 내용을 변경
+            ori_content = ori_content.replace(
+                tag_name,
+                '<a href="#" class="hash-tag">{}</a>'.format(
+                    tag_name,
+                )
+            )
+            # content에 포함된 Tag폭록을 자신의 tags필드에 추가
+            if not self.tags.filter(pk=tag.pk).exists():
+                self.tags.add(tag)
+
+        # 편집이 완료된 문자열을 html_content에 저장
+        self.html_content = ori_content
 
 
 class CommentLike(models.Model):
