@@ -1,5 +1,5 @@
 {% load static %}
-<article class="post">
+<article id="post-{{ post.pk }}" class="post">
     <header>
         <div class="post-header-left">
             <img src="" alt="">
@@ -57,18 +57,20 @@
                 for문에서 사용하는 각 loop의 아이템 이름 'comment'와 일치
             -->
             {% include 'include/post_comment.html' %}
-            <div class="post-comment">
+            <!--<div class="post-comment">
                 <a href="" class="comment-author">{{ comment.author }}</a>
                 <span class="comment-content">{{ comment.content }}</span>
                 <a href="" class="comment-tag"></a>
-                <!-- <p class="comment-created">{{ comment.created_date }}</p> -->
-            </div>
+                <p class="comment-created">{{ comment.created_date }}</p>
+            </div> -->
             {% endif %}
             {% endfor %}
         </div>
         <p class="created">{{ post.created_date }}</p>
-        <form action="">
-            <input type="text" placeholder="댓글달기" class="input-comment">
+        <form action="{% url 'post:comment_create' post_pk=post.pk %}?next={{ request.path }}#post-{{ post.pk }}" method="post">
+            {% csrf_token %}
+            <!-- <input type="text" placeholder="댓글달기" class="input-comment"> -->
+            {{ comment_form.content }}
         </form>
     </div>
 </article>
