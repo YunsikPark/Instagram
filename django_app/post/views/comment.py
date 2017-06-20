@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404, render
 from django.views.decorators.http import require_POST
 
+from post.decorators import comment_owner
 from ..forms import CommentForm
 from ..models import Post, Comment
 
@@ -45,13 +46,22 @@ def comment_create(request, post_pk):
     return redirect('post:post_detail', post_pk=post.pk)
 
 
+@comment_owner
+@login_required
 def comment_modify(request, comment_pk):
     # 수정
     # CommentForm을 만들어서 해당 ModelForm안에서 생성/수정가능하도록 사용
     comment = get_object_or_404(Comment, pk=comment_pk)
+    next = request.GET.get('next')
     if request.method == 'POST':
-        pass
+        # Form을 이용해 객체를 update시킴(data에 포함된 부분만 update됨)
+        form = CommentForm(request.POST, instance=comment)
+        form.save()
+        if next:
+            return redirect(next)
+        return redirect('post:post_detail', post_pk=comment.post.pk)
     else:
+        # CommentForm에 기존 comment인스턴스의 내용을 채운 bound form
         form = CommentForm(instance=comment)
     context = {
         'form': form,
@@ -59,6 +69,13 @@ def comment_modify(request, comment_pk):
     return render(request, 'post/comment_modify.html', context)
 
 
+@comment_owner
+@require_POST
+@login_required
 def comment_delete(request, post_pk, comment_pk):
+    # comment_delete 이후에 원래 페이지로 연결
     # POST요청을 받아 Comment객체를 delete, 이후 post_detail페이지로 redirect
-    pass
+    comment = get_object_or_404(Comment, pk=comment_pk)
+    post = comment.post
+    comment.delete()
+    return redirect('post:post_detail', post_pk=post.pk)
