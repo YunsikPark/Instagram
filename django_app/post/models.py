@@ -63,10 +63,8 @@ class Comment(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            super().save(*args, **kwargs)
-        self.make_html_content_and_add_tags()
         super().save(*args, **kwargs)
+        self.make_html_content_and_add_tags()
 
     def make_html_content_and_add_tags(self, update=True):
         # ex) 박보영 #여신 #존예 인스타
@@ -86,13 +84,12 @@ class Comment(models.Model):
             # 기존 content의 내용을 변경
             change_tag = '<a href="#" class="hash-tag">{}</a>'.format(tag_name)
             ori_content = re.sub(r'{}(?![<\w])'.format(tag_name), change_tag, ori_content, count=1)
-
             # content에 포함된 Tag폭록을 자신의 tags필드에 추가
             if not self.tags.filter(pk=tag.pk).exists():
                 self.tags.add(tag)
-
         # 편집이 완료된 문자열을 html_content에 저장
         self.html_content = ori_content
+        super().save(update_fields=['html_content'])
 
 
 class CommentLike(models.Model):
