@@ -12,10 +12,6 @@
 {#    custom_tags의 query_string커스텀 필터를 사용#}
 	<div class="test">{{ request.GET|query_string }}</div>
 
-    <div>
-		<a href="{% url 'post:post_create' %}" class="btn">PostCreate</a>
-	</div>
-
 	{% for post in posts %}
 		{% include 'include/post.html' with type='list' %}
 	{% endfor %}
