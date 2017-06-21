@@ -43,3 +43,10 @@ ul, ol {
 .login-form {
   display: inline-block;
 }
+
+.test {
+  padding: 10px;
+  color: white;
+  background-color: red;
+  font-size: 14px;
+}
