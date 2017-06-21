@@ -1,4 +1,6 @@
 {% extends 'common/base.html' %}
+{#utils패키지의 templatetags.custom_tags를 가리킴#}
+{% load custom_tags %}
 
 {% block content %}
 	<!--4. post_list.html에서 for loop사용해 전달된 posts변수 순환 및 출력-->
@@ -6,18 +8,17 @@
 		include
 			https://docs.djangoproject.com/en/1.11/ref/templates/builtins/#include
 	-->
-	<div>
+
+{#    custom_tags의 query_string커스텀 필터를 사용#}
+	<div class="test">{{ request.GET|query_string }}</div>
+
+    <div>
 		<a href="{% url 'post:post_create' %}" class="btn">PostCreate</a>
 	</div>
+
 	{% for post in posts %}
 		{% include 'include/post.html' with type='list' %}
 	{% endfor %}
-
-
-    <div class="test">{{ request.GET }}</div>
-    <div class="test">
-    {% for k, v in request.GET.lists %}{% for v in v_list %}&{{ k }}={{ v }}{% endfor %}{% endfor %}
-    </div>
 
     {% if posts.has_previous %}
         <!-- 첫 페이지로 가는 링크 -->
