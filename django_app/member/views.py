@@ -3,7 +3,7 @@ from django.contrib.auth import \
     login as django_login, \
     logout as django_logout, get_user_model
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .forms import LoginForm, SignupForm
 
@@ -120,3 +120,58 @@ def signup(request):
         'form': form,
     }
     return render(request, 'member/signup.html', context)
+
+
+def profile(request, user_pk=None):
+    # 0. urls.py와 연결
+    # 1. user_pk에 해당하는 User를 cur_user키로 render
+    #     1-1. user = User.objects.get(조건)
+    #          context = {내용채우기}
+    #          return render(인수 전달)
+    # user = User.objects.get(pk=user_pk)
+    # DoesNotExist Exception 발생시 raise Http404
+
+
+    """
+    1. GET parameter로 'page'를 받아 처리
+        page가 1일 경우 Post의 author가 해당 User인
+        Post목록을 -created_date 순서로 page*9만큼의
+        QuerySet을 생성해서 ㄹ턴
+
+        만약 실제 Post개수보다 큰 page가 왔으 경우, 최대한의 값을 보여줌
+        int로 변환 불가능한 경우 except처리
+        1보다 작은값일 경우 except처리
+        'page'키의 값이 오지 않을 경우 page=1로 처리
+
+    2. def follow_toggle(request, user_pk)
+        위 함수 기반 뷰를 구현
+            login_required
+            requirePOST
+        데코레이터들을 사용(필요하다면 더 추가)
+        처리 후 next값을 받아 처리하고,
+            없을 경우 해당 User의 profile페이지로 이동
+
+    **extra. 유저 차단기능 만들어보기
+        Block여부는 Relation에서 다룸
+            1. followers, following에 유저가 나타나면 안됨
+            2. block_users 로 차단한 유저목록 QuerySet리턴
+            3. follow, unfollow기능을 하기 전에 block된 유저인지 확인
+            4. block처리시 follow상태는 해제되어야 함 (동시적용불가)
+            5. 로그인 시 post_list에서 block_users의 글은 보이지 않도록 함
+    """
+
+    if user_pk:
+        user = get_object_or_404(User, pk=user_pk)
+    else:
+        user = request.user # 자신의 프로필을 보여줌
+    context = {
+        'cur_user': user,
+    }
+    return render(request, 'member/profile.html', context)
+
+    # 2. member/profile.html작성, 해당 user정보 보여주기
+        # 2-1. 해당 user의 followers, following목록 보여주기
+
+    # 3. 현재 로그인한 유저가 해당 유저(cur_user)를 팔로우하고 있는지 여부 보여주기
+        # 3-1. 팔로우하고 있다면 '팔로우 해제' 버튼, 아니라면 '팔로우'버튼 띄워주기
+    # 4~ -> def follow_toggle(request)뷰 생성
