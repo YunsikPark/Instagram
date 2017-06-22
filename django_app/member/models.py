@@ -85,11 +85,16 @@ class User(AbstractUser):
 
     @property
     def following(self):
-        return '내가 follow중인 User QuerySet'
+        # https://docs.djangoproject.com/en/1.11/ref/models/querysets/#in
+        relations = self.follow_relations.all()
+        # return '내가 follow중인 User QuerySet'
+        return User.objects.filter(pk__in=relations.values('pk'))
 
     @property
     def followers(self):
-        return '나를 follow중인 User QuerySet'
+        relations = self.follower_relations.all()
+        # return '나를 follow중인 User QuerySet'
+        return User.objects.filter(pk__in=relations.values('pk'))
 
 
 class Relation(models.Model):
