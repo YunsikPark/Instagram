@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Comment
+from .models import Post, Comment, PostLike
 
 
 # Post에 대한 ModelAdmin을 만들고 register
@@ -11,3 +11,4 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment)
+admin.site.register(PostLike)

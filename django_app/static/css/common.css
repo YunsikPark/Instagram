@@ -1,8 +1,8 @@
 .btn {
-  color: white;
+  color: #262626;
   padding: 6px 12px;
   border: 1px solid rgba(0, 0, 0, 0.0975);
-  background-color: lightblue;
+  background-color: #fff;
   border-radius: 3px;
   cursor: pointer;
   text-decoration: none;

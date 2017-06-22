@@ -56,7 +56,7 @@ def comment_modify(request, comment_pk):
     if request.method == 'POST':
         # Form을 이용해 객체를 update시킴(data에 포함된 부분만 update됨)
         form = CommentForm(request.POST, instance=comment)
-        if form.is_valid()
+        if form.is_valid():
             form.save()
             if next:
                 return redirect(next)
