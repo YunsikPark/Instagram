@@ -69,6 +69,8 @@
         </div>
         <p class="created">{{ post.created_date }}</p>
         <form action="{% url 'post:comment_create' post_pk=post.pk %}?next={{ request.path }}{{ request.GET|query_string }}#post-{{ post.pk }}" method="post">
+           <!--next주소의 page Get parameter를 수동으로 지정할 때-->
+{#        <form action="{% url 'post:comment_create' post_pk=post.pk %}?next={{ request.path }}?page={{ request.GET.page }}#post-{{ post.pk }}" method="post">#}
             {% csrf_token %}
             <!-- <input type="text" placeholder="댓글달기" class="input-comment"> -->
             {{ comment_form.content }}
