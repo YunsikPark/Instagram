@@ -2,9 +2,12 @@ from django.contrib.auth import \
     authenticate, \
     login as django_login, \
     logout as django_logout, get_user_model
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
 
+from post.models import Post
 from .forms import LoginForm, SignupForm
 
 User = get_user_model()
@@ -123,6 +126,7 @@ def signup(request):
 
 
 def profile(request, user_pk=None):
+    num_posts_per_page = 3
     # 0. urls.py와 연결
     # 1. user_pk에 해당하는 User를 cur_user키로 render
     #     1-1. user = User.objects.get(조건)
@@ -130,19 +134,27 @@ def profile(request, user_pk=None):
     #          return render(인수 전달)
     # user = User.objects.get(pk=user_pk)
     # DoesNotExist Exception 발생시 raise Http404
-
-
     """
     1. GET parameter로 'page'를 받아 처리
         page가 1일 경우 Post의 author가 해당 User인
         Post목록을 -created_date 순서로 page*9만큼의
-        QuerySet을 생성해서 ㄹ턴
+        QuerySet을 생성해서 리턴
 
         만약 실제 Post개수보다 큰 page가 왔으 경우, 최대한의 값을 보여줌
         int로 변환 불가능한 경우 except처리
         1보다 작은값일 경우 except처리
         'page'키의 값이 오지 않을 경우 page=1로 처리
+    """
+    page = request.GET.get('page', 1)
+    try:
+        page = int(page) if int(page) > 1 else 1
+    except ValueError:
+        page = 1
+    except Exception as e:
+        page = 1
+        print(e)
 
+    """
     2. def follow_toggle(request, user_pk)
         위 함수 기반 뷰를 구현
             login_required
@@ -163,15 +175,52 @@ def profile(request, user_pk=None):
     if user_pk:
         user = get_object_or_404(User, pk=user_pk)
     else:
-        user = request.user # 자신의 프로필을 보여줌
+        user = request.user  # 자신의 프로필을 보여줌
+
+    # page * 9 만큼의 Post QuerySet을 리턴, 정렬순서는 created_date 내림차순
+    # posts = Post.objects.filter(author=user).order_by('-created_date')[:page * 9]
+    posts = user.post_set.order_by('-created_date')[:page * num_posts_per_page]
+    # post_count = Post.objects.filter(author=user).count()
+    post_count = user.post_set.count()
+    # next_page = 현재 page에서 보여주는 Post개수 보다 post_count가 클 경우 전달받은 page +1, 아닐경우 None 할당
+    next_page = page + 1 if post_count > page * num_posts_per_page else None
+
     context = {
         'cur_user': user,
+        'posts': posts,
+        'post_count': post_count,
+        'page': page,
+        'next_page': next_page,
     }
     return render(request, 'member/profile.html', context)
 
     # 2. member/profile.html작성, 해당 user정보 보여주기
-        # 2-1. 해당 user의 followers, following목록 보여주기
+    # 2-1. 해당 user의 followers, following목록 보여주기
 
     # 3. 현재 로그인한 유저가 해당 유저(cur_user)를 팔로우하고 있는지 여부 보여주기
-        # 3-1. 팔로우하고 있다면 '팔로우 해제' 버튼, 아니라면 '팔로우'버튼 띄워주기
+    # 3-1. 팔로우하고 있다면 '팔로우 해제' 버튼, 아니라면 '팔로우'버튼 띄워주기
     # 4~ -> def follow_toggle(request)뷰 생성
+
+@require_POST
+@login_required
+def follow_toggle(request, user_pk):
+    # 'next' GET parameter 값을 가져옴
+    next = request.GET.get('next')
+    # follow를 toggle할 대상 유저
+    target_user = get_object_or_404(User, pk=user_pk)
+    # 요청 유저 (로그인한 유저)의 follow_toggle()메서드 실행
+    request.user.follow_toggle(target_user)
+    # next가 없으면 해당 위치로 아닐경우 target_user의 profile페이지로 이동
+    if next:
+        return redirect(next)
+    return redirect('member:profile', user_pk=user_pk)
+
+
+def profile_edit(request, user_pk):
+    """
+    request.method == 'POST'일 때
+        nickname과 img_profile(필드도 모델에 추가)을 수정할
+        UserEditForm을 구성 (ModelForm상속)
+        및 사용
+    """
+    pass
