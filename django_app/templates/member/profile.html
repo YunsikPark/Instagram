@@ -5,9 +5,9 @@
     <div class="content">
     <!-- nickname, img_profile을 수정할 수 있는 form 구현 -->
         <h3>{{ cur_user }}</h3>
-    {% if cur_user.img_profile %}
+{#    {% if cur_user.img_profile %}#}
         <img src="{{ cur_user.img_profile.url }}" alt="" width="150">
-    {% endif %}
+{#    {% endif %}#}
 
     {% if user.is_authenticated %}
         {%  if user != cur_user %}
