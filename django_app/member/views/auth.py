@@ -1,14 +1,17 @@
 from django.contrib.auth import \
     login as django_login, \
     logout as django_logout, get_user_model
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.decorators.http import require_POST
+from django.shortcuts import render, redirect
 
-from .forms import LoginForm, SignupForm
-from .forms import UserEditForm
+from ..forms import LoginForm, SignupForm
 
 User = get_user_model()
+
+__all__ = (
+    'login',
+    'logout',
+    'signup',
+)
 
 
 def login(request):
@@ -121,8 +124,3 @@ def signup(request):
         'form': form,
     }
     return render(request, 'member/signup.html', context)
-
-
-
-
-
