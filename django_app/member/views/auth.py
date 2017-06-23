@@ -1,8 +1,12 @@
+from pprint import pprint
+
+import requests
 from django.contrib.auth import \
     login as django_login, \
     logout as django_logout, get_user_model
 from django.shortcuts import render, redirect
 
+from config import settings
 from ..forms import LoginForm, SignupForm
 
 User = get_user_model()
@@ -11,6 +15,7 @@ __all__ = (
     'login',
     'logout',
     'signup',
+    'facebook_login',
 )
 
 
@@ -125,3 +130,31 @@ def signup(request):
     }
     return render(request, 'member/signup.html', context)
 
+
+def facebook_login(request):
+    redirect_uri = '{}://{}{}'.format(
+        request.scheme,
+        request.META['HTTP_HOST'],
+        request.path,
+    )
+    # 액세스토큰의 코드를 교환할 URL
+    url_access_token = 'https://graph.facebook.com/v2.9/oauth/access_token'
+
+    # facebook_login view가 처음 호출할 때
+    #   츄저가 Facebook login dialog에서 로그인 후 , 페이스북에서 우리서비스(Consumer)쪽으로
+    #   GET parameter를 이용해 'code' 값ㅇ르 전달 해 줌 (전달받는 주소는 위의 uri_redirect)
+    code = request.GET.get('code')
+    # code키값이 존재하지 않으면 로그인을 더이상 진행하지 않음
+    if code:
+        # 액세스토큰의 코드 교환
+        # uri생성을 위한 params
+        url_access_token_params = {
+            'client_id': settings.FACEBOOK_APP_ID,
+            'redirect_uri': redirect_uri,
+            'client_secret': settings.FACEBOOK_SECRET_CODE,
+            'code': code,
+        }
+        # 해당 URL에 get요청 후 결과 (json형식)를 파이썬 object로 변환(result변수)
+        response = requests.get(url_access_token, params=url_access_token_params)
+        result = response.json()
+        pprint(result)
