@@ -184,19 +184,3 @@ def facebook_login(request):
         if code:
             get_access_token(code)
             # 액세스토큰 검사
-            app_access_token_params = {
-                'app_id': 1601998296497280,
-                'application': 'ysplog',
-                'expires_at': 12341234,
-                'is_valid': True,
-                'issued_at': 1234,
-                'metadata': {
-                    'asdf':'asdf'
-                },
-                'scopes': [
-                    'email',
-                    'publish_actions'
-                ],
-                'user_id': 1234
-            }
-
