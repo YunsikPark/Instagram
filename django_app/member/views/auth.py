@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import requests
 from django.contrib import messages
 from django.contrib.auth import \
@@ -220,10 +222,19 @@ def facebook_login(request):
         url_user_info = 'https://graph.facebook.com/v2.9/{user_id}'.format(user_id=user_id)
         url_user_info_params = {
             'access_token': token,
+            'fields': ','.join([
+                'id',
+                'name',
+                'first_name',
+                'last_name',
+                'email',
+                'picture',
+                'gender',
+            ])
         }
         response = requests.get(url_user_info, params=url_user_info_params)
         result = response.json()
-        print(result)
+        pprint(result)
 
     # code키값이 존재하지 않으면 로그인을 더이상 진행하지 않음
     if not code:
@@ -241,7 +252,7 @@ def facebook_login(request):
 
         # debug_result에 있는 user_id값을 이용해서 GraphAPI에 유저정보를 요청
         user_info = get_user_info(user_id=debug_result['data']['user_id'], token=access_token)
-        print(user_info)
+        pprint(user_info)
 
     except GetAccessTakenException as e:
         print(e.code)
