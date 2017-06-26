@@ -1,6 +1,7 @@
 from pprint import pprint
 
 import requests
+from django.contrib import messages
 from django.contrib.auth import \
     login as django_login, \
     logout as django_logout, get_user_model
@@ -132,25 +133,30 @@ def signup(request):
 
 
 def facebook_login(request):
-    redirect_uri = '{}://{}{}'.format(
-        request.scheme,
-        request.META['HTTP_HOST'],
-        request.path,
-    )
-    # 액세스토큰의 코드를 교환할 URL
-    url_access_token = 'https://graph.facebook.com/v2.9/oauth/access_token'
-
     # facebook_login view가 처음 호출할 때
     #   츄저가 Facebook login dialog에서 로그인 후 , 페이스북에서 우리서비스(Consumer)쪽으로
     #   GET parameter를 이용해 'code' 값ㅇ르 전달 해 줌 (전달받는 주소는 위의 uri_redirect)
     code = request.GET.get('code')
-    # code키값이 존재하지 않으면 로그인을 더이상 진행하지 않음
-    if code:
+    app_access_token = '{}|{}'.format(
+        settings.FACEBOOK_APP_ID,
+        settings.FACEBOOK_SECRET_CODE
+    )
+
+    def get_access_token(code):
+        # 액세스토큰의 코드를 교환할 URL
+        url_access_token = 'https://graph.facebook.com/v2.9/oauth/access_token'
+
+        # 이전에 요청했던 redirect_uri와 같은 값을 만들어 줌 (access_token을 요청할 때 필요함)
+        redirect_uri = '{}://{}{}'.format(
+            request.scheme,
+            request.META['HTTP_HOST'],
+            request.path,
+        )
         # 액세스토큰의 코드 교환
         # uri생성을 위한 params
         url_access_token_params = {
             'client_id': settings.FACEBOOK_APP_ID,
-            'redirect_uri': redirect_uri,
+            'redirect_uri': redirect_uri + 'asdf',
             'client_secret': settings.FACEBOOK_SECRET_CODE,
             'code': code,
         }
@@ -158,3 +164,39 @@ def facebook_login(request):
         response = requests.get(url_access_token, params=url_access_token_params)
         result = response.json()
         pprint(result)
+
+        # 액세스토큰 코드교환 결과에 오류가 있을 경우
+        # 해당 오류 request에 message로 넘기고 이전페이지 (HTTP_REFERER)로 redirect
+        if 'error' in result:
+
+            # 상세 오류 메세지 (개발자용)
+            error_message = 'Facebook login error\n type: {}\n message: {}'.format(
+                result['error']['type'],
+                result['error']['message']
+            )
+            # 유저용 메세지
+            error_message_for_user = 'Facebook login error'
+            # request에 에러메세지 전달
+            messages.error(request, error_message)
+            return redirect(request.META['HTTP_REFERER'])
+
+        # code키값이 존재하지 않으면 로그인을 더이상 진행하지 않음
+        if code:
+            get_access_token(code)
+            # 액세스토큰 검사
+            app_access_token_params = {
+                'app_id': 1601998296497280,
+                'application': 'ysplog',
+                'expires_at': 12341234,
+                'is_valid': True,
+                'issued_at': 1234,
+                'metadata': {
+                    'asdf':'asdf'
+                },
+                'scopes': [
+                    'email',
+                    'publish_actions'
+                ],
+                'user_id': 1234
+            }
+
