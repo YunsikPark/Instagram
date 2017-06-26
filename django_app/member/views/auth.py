@@ -1,3 +1,4 @@
+import re
 from pprint import pprint
 
 import requests
@@ -5,6 +6,8 @@ from django.contrib import messages
 from django.contrib.auth import \
     login as django_login, \
     logout as django_logout, get_user_model
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 from django.shortcuts import render, redirect
 
 from config import settings
@@ -212,7 +215,7 @@ def facebook_login(request):
         }
         response = requests.get(url_debug_token, url_debug_token_params)
         result = response.json()
-        print(result)
+        pprint(result)
         if 'error' in result['data']:
             raise DebugTokenException(result)
         else:
@@ -228,7 +231,7 @@ def facebook_login(request):
                 'first_name',
                 'last_name',
                 'email',
-                'picture',
+                'picture.type(large)',
                 'gender',
             ])
         }
@@ -252,7 +255,11 @@ def facebook_login(request):
 
         # debug_result에 있는 user_id값을 이용해서 GraphAPI에 유저정보를 요청
         user_info = get_user_info(user_id=debug_result['data']['user_id'], token=access_token)
-        pprint(user_info)
+
+        user = User.objects.get_or_create_facebook_user(user_info)
+        # 해당 request에 유저를 로그인 시킴
+        django_login(request, user)
+        return redirect(request.META['HTTP_REFERER'])
 
     except GetAccessTakenException as e:
         print(e.code)
