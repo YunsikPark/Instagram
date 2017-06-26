@@ -41,7 +41,7 @@ class UserManager(DefaultUserManager):
             )
 
             # 이미지파일을 임시저장할 파일객체
-            temp_file = NamedTemporaryFile(delete=False)
+            temp_file = NamedTemporaryFile()
 
             # 프로필 이미지 URL에 대한 get요청 (이미지 다운로드)
             response = requests.get(url_picture)
@@ -52,7 +52,7 @@ class UserManager(DefaultUserManager):
             # ImageField의 save()메서드를 호출해서 해당 임시파일객체를 주어진 이름의 파일로 저장
             # 저장하는 파일명은 위에서 ㅁ나든 <유져pk.주어진파일확장자>를 사용
             user.img_profile.save(file_name, File(temp_file))
-            return user
+        return user
 
 class User(AbstractUser):
     """
