@@ -237,7 +237,7 @@ def facebook_login(request):
         }
         response = requests.get(url_user_info, params=url_user_info_params)
         result = response.json()
-        pprint(result)
+        return result
 
     # code키값이 존재하지 않으면 로그인을 더이상 진행하지 않음
     if not code:
