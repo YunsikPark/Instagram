@@ -4,6 +4,7 @@ __all__ = (
     'Video',
 )
 
+
 # Video를 위한 CustomManager
 class VideoManager(models.Manager):
     def create_from_search_result(self, result):
@@ -30,6 +31,7 @@ class VideoManager(models.Manager):
             video.title,
             'created' if video_created else 'already exist'
         ))
+        return video
 
 
 class Video(models.Model):
