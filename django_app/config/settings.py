@@ -41,7 +41,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # django_app/templates
-TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 # django_app/static
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
@@ -59,11 +59,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 AUTH_USER_MODEL = 'member.User'
 LOGIN_URL = 'member:login'
 
-
 # Facebook
 FACEBOOK_APP_ID = '1601998296497280'
 FACEBOOK_SECRET_CODE = 'e7d66517fdd69f442b95340ac6647b46'
-
 
 # Application definition
 INSTALLED_APPS = [
@@ -120,6 +118,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -128,6 +127,10 @@ DATABASES = {
         'PASSWORD': 'dbstlr07',
         'HOST': 'localhost',
         'PORT': '5432',
+    },
+    'sqlite': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 

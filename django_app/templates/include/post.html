@@ -20,7 +20,7 @@
         {% endif %}
 
         {% if post.video %}
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ post.video.video_id }}" frameborder="0" allowfullscreen></iframe>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ post.video.youtube_id }}" frameborder="0" allowfullscreen></iframe>
         {% else %}
             <img src="{{ post.photo.url }}" alt="">
         {% endif %}
