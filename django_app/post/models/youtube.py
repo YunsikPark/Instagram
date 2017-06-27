@@ -1,5 +1,8 @@
 from django.db import models
 
+__all__ = (
+    'Video',
+)
 
 # Video를 위한 CustomManager
 class VideoManager(models.Manager):
