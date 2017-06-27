@@ -33,7 +33,7 @@ def search(q):
     search_response = youtube.search().list(
         q=q,
         part="snippet",
-        maxResults="10",
+        maxResults=10,
         type='video'
     ).execute()
 
