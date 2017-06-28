@@ -123,7 +123,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'instagram',
-        'USER': 'instagram',
+        'USER': 'ysp',
         'PASSWORD': 'dbstlr07',
         'HOST': 'localhost',
         'PORT': '5432',

@@ -27,7 +27,7 @@ class UserManager(DefaultUserManager):
             }
         )
         # 유저가 새로 생성되었을 때만 프로필 이미지를 받아옴
-        if user_created:
+        if user_created and user_info.get('picture'):
             # https://scontent.xx.fbcdn.net/v/t1.0-1/p200x200/530884_346118492106862_1045666018_n.jpg?oh=84e07d8c6120029ad72454d852e16f72&oe=59CB43A8
             # 프로필 이미지 URL
             url_picture = user_info['picture']['data']['url']
@@ -53,6 +53,7 @@ class UserManager(DefaultUserManager):
             # 저장하는 파일명은 위에서 ㅁ나든 <유져pk.주어진파일확장자>를 사용
             user.img_profile.save(file_name, File(temp_file))
         return user
+
 
 class User(AbstractUser):
     """
@@ -118,15 +119,15 @@ class User(AbstractUser):
         )
 
         # Relation 모델의 매니저를 사용
-        Relation.objects.get_or_create(
-            from_user=self,
-            to_user=user,
-        )
+        # Relation.objects.get_or_create(
+        #     from_user=self,
+        #     to_user=user,
+        # )
 
         # user로 주어진 User로부터 Relation의 to_user에 해당하는 RelationMenager를 사용
-        user.follow_relations.get_or_created(
-            from_user=self
-        )
+        # user.follower_relations.get_or_create(
+        #     from_user=self
+        # )
 
     def unfollow(self, user):
         # 위의 반대 역할
