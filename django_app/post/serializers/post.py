@@ -12,5 +12,10 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = (
             'pk',
+            'author',
             'photo',
+        )
+        read_only_fields = (
+            'author',
+
         )
