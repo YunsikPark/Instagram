@@ -23,6 +23,15 @@ class SignupForm(forms.Form):
             }
         )
     )
+    email = forms.EmailField(
+        max_length=100,
+        help_text='Email을 입력해 주세요',
+        widget=forms.EmailInput(
+            attrs={
+                'placeholder': 'sample@gmail.com'
+            }
+        )
+    )
     password1 = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
@@ -55,6 +64,14 @@ class SignupForm(forms.Form):
                 'Nickname already exist'
             )
         return nickname
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email and User.objects.filter(email=email).exists():
+            raise forms.ValidationError(
+                'Email already exist'
+            )
+        return email
 
     def clean_password2(self):
         # password1과 password2를 비교하여 같은지 검증
