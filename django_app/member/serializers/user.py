@@ -4,6 +4,9 @@ from ..models import User
 
 __all__ = (
     'UserSerializer',
+    'UserCreationSerializer',
+    'UserUpdateSerializer',
+
 )
 
 
@@ -14,6 +17,23 @@ class UserSerializer(serializers.ModelSerializer):
             'pk',
             'username',
             'nickname',
+            'img_profile'
+        )
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'pk',
+            'username',
+            'ori_password',
+            'password1',
+            'password2',
+            'img_profile',
+        )
+        read_only_fields = (
+            'username',
         )
 
 
