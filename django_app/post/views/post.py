@@ -27,6 +27,10 @@ __all__ = (
 )
 
 
+# 1. EMAIL 관련 settings.py에 추가
+# 2. GMAIL 의 경우 보안설정을 변경해야함
+# 3. 누군가 어떤 글에 댓글을 달면, 해당 글의 작성자 이메일로 "누가 어떤 내용의 댓글을 달았음"이라는 메일 보내기
+
 def post_list_original(request):
     # 모든 Post목록을 'posts'라는 key로 context에 담아 return render처리
     # post/post_list.html을 template으로 사용하도록 한다

@@ -176,3 +176,13 @@ SECRET_KEY = 'ke_u%$x!^k+c=00yg-j199@$v$xo^soh3z#(psfq60#kw&048j'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+# For email
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# gmail
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'space214@gmail.com'
+EMAIL_HOST_PASSWORD = 'asdfasdfasdf'
+EMAIL_PORT = 587

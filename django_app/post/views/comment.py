@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMessage, send_mail
 from django.shortcuts import redirect, get_object_or_404, render
 from django.views.decorators.http import require_POST
 
@@ -39,6 +40,22 @@ def comment_create(request, post_pk):
     else:
         result = '<br>'.join(['<br>'.join(v) for v in form.errors.values()])
         messages.error(request, result)
+    mail_subject = '{}에 작성한 글에 {}님이 댓글을 작성했습니다'.format(
+        post.created_date.strftime('%y.%m.%d %H:%M'),
+        request.user
+    )
+    mail_content = '{}님의 댓글\n{}'.format(
+        request.user,
+        comment.content
+    )
+    send_mail(
+        mail_subject,
+        mail_content,
+        'space214@gmail.com',
+        [post.author.email],
+    )
+    # message = EmailMessage(mail_subject, mail_content, to=[post.author.email])
+    # message.send()
 
     # next 값이 존재하면 해당 주소로, 없으면 post_detail로 이동
     if next:
