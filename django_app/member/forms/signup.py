@@ -1,10 +1,11 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
 
 User = get_user_model()
 
 
-class SignupForm(forms.Form):
+class SignupForm1(forms.Form):
     # SignupForm을 구성하고 해당 form을 view에서 사용하도록 설정
     username = forms.CharField(
         help_text= 'Signup help text test',
@@ -99,3 +100,7 @@ class SignupForm(forms.Form):
         return user
 
 
+class SignupForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields + ('email', 'nickname')

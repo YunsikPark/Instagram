@@ -85,6 +85,7 @@ class User(AbstractUser):
         (USER_TYPE_DJANGO, 'Django'),
         (USER_TYPE_FACEBOOK, 'Facebook'),
     )
+    email = models.EmailField(null=True, unique=True)
     # 유저타입 기본은 Django 이며, 페이스북 로그인 시 USER_TYPE_FACEBOOK값을 갖도록 함
     user_type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES, default=USER_TYPE_DJANGO)
     nickname = models.CharField(max_length=24, null=True, unique=True)
