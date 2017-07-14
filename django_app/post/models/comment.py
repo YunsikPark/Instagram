@@ -8,6 +8,8 @@ import re
 
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.urls import reverse
 
 from .others import Tag
@@ -71,5 +73,3 @@ class CommentLike(models.Model):
     comment = models.ForeignKey(Comment)
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     created_date = models.DateTimeField(auto_now_add=True)
-
-

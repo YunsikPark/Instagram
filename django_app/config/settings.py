@@ -177,12 +177,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# For email
+# For EMAIL
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# gmail
+# GMAIL
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'space214@gmail.com'
 EMAIL_HOST_PASSWORD = 'asdfasdfasdf'
 EMAIL_PORT = 587
+
+# Celery
+CELERY_BROKER_URL = 'redis://localhost:6379/'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/'
