@@ -1,7 +1,6 @@
 from rest_framework import permissions, generics
 
-from member.serializers import UserSerializer
-from member.serializers.user import UserCreationSerializer
+from member.serializers import UserSerializer, UserCreationSerializer
 from utils.permissions import ObjectIsRequestUser
 from ..models import User
 
@@ -33,3 +32,4 @@ class UserRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticatedOrReadOnly,
         ObjectIsRequestUser,
     )
+

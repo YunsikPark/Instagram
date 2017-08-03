@@ -39,6 +39,8 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from corsheaders.defaults import default_methods
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # django_app/templates
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
@@ -74,6 +76,7 @@ INSTALLED_APPS = [
 
     'django_extensions',
     'rest_framework',
+    'corsheaders',
 
     'post',
     'member',
@@ -85,6 +88,8 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -190,3 +195,47 @@ EMAIL_PORT = 587
 # Celery
 CELERY_BROKER_URL = 'redis://localhost:6379/'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/'
+
+# Cors
+# CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST = (
+    'null',
+)
+
+
+# CORS_URLS_REGEX = r'^/api/.*$'
+#
+# CORS_ALLOW_METHODS = (
+#     'DELETE',
+#     'GET',
+#     'OPTIONS',
+#     'PATCH',
+#     'POST',
+#     'PUT',
+# )
+#
+# # CORS_ALLOW_METHODS = default_methods +  (
+# #     'POKE',
+# # )
+#
+# CORS_ALLOW_HEADERS = (
+#     'accept',
+#     'accept-encoding',
+#     'authorization',
+#     'content-type',
+#     'dnt',
+#     'origin',
+#     'user-agent',
+#     'x-csrftoken',
+#     'x-requested-with',
+# )
+
+
+# DRF
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        # 'rest_framework.renderers.BrowsableAPIRenderer',
+    )
+}
